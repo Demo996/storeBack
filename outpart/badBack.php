@@ -37,11 +37,12 @@ if($tmp = checkToken($jwt)) {
 }
 
 parse_str($data, $getData);
+$operator = $getData["operator"];
+$getObj = $getData["data"];
 $dataArr = array();
-foreach ($getData as $key => $value) {
+foreach ($getObj as $key => $value) {
     array_push($dataArr, $value);
 }
-$operator = $dataArr[11];
 
 $sql = "INSERT INTO badpro_return VALUES('$dataArr[0]','$dataArr[1]','$dataArr[2]','$dataArr[3]','$dataArr[4]','$dataArr[5]',
         '$dataArr[6]',$dataArr[7],'$dataArr[8]','$dataArr[9]','$dataArr[10]', '$operator')";

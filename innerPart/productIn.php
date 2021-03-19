@@ -39,17 +39,18 @@ $getObj = $getData['data'];
 foreach ($getObj as $key => $value) {
     array_push($getArr,$value);
 }
-$store = $getArr[14];
+$store = $getArr[13];
+$operator = $getData['operator'];
 
 //插入到总库
 $sql1 = "INSERT INTO productor VALUES('$getArr[0]','$getArr[1]','$getArr[2]','$getArr[3]','$getArr[4]','$getArr[5]','$getArr[6]',$getArr[7],'$getArr[8]',
-        '$getArr[9]','$getArr[10]','$getArr[11]','$getArr[12]','$getArr[13]')";
+        '$getArr[9]','$getArr[10]','$getArr[11]','$getArr[12]','$operator')";
 $sql11 = "INSERT INTO entertable VALUES('$getArr[0]','$getArr[1]','$getArr[2]','$getArr[3]','$getArr[4]','$getArr[5]','$getArr[6]',$getArr[7],'$getArr[10]','$getArr[11]')";
 $sql111 = "INSERT INTO finaltable VALUES('$getArr[0]','$getArr[1]','$getArr[2]','$getArr[3]','$getArr[4]','$getArr[5]','$getArr[6]',$getArr[7]) ON DUPLICATE KEY UPDATE 库存量=库存量+$getArr[7]";
 
 // 插入到所属库
 $sql2 = "INSERT INTO $store.productor VALUES('$getArr[0]','$getArr[1]','$getArr[2]','$getArr[3]','$getArr[4]','$getArr[5]','$getArr[6]',$getArr[7],'$getArr[8]',
-        '$getArr[9]','$getArr[10]','$getArr[11]','$getArr[12]','$getArr[13]')";
+        '$getArr[9]','$getArr[10]','$getArr[11]','$getArr[12]','$operator')";
 $sql22 = "INSERT INTO $store.entertable VALUES('$getArr[0]','$getArr[1]','$getArr[2]','$getArr[3]','$getArr[4]','$getArr[5]','$getArr[6]',$getArr[7],'$getArr[10]','$getArr[11]')";
 $sql222 = "INSERT INTO $store.finaltable VALUES('$getArr[0]','$getArr[1]','$getArr[2]','$getArr[3]','$getArr[4]','$getArr[5]','$getArr[6]',$getArr[7]) ON DUPLICATE KEY UPDATE 库存量=库存量+$getArr[7]";
 

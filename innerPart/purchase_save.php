@@ -34,6 +34,7 @@ if($tmp = checkToken($jwt)) {
 }
 
 parse_str($data, $getData);
+$operator = $getData['operator'];
 $main = $getData['main'];
 $detail = $getData['detail'];
 
@@ -59,8 +60,8 @@ function handleId($tbName) {
 $conn->begin_transaction(true);
 try {
     $isOk = true;
-    $sqlMain1 = "INSERT INTO buylist_one VALUES('$tableNumber',$totalNum,$payMoney,$payMoney,'$applyMan','$currDept','$applyDate','$purchaser','$note','admin')";
-    $sqlMain2 = "INSERT INTO waitfor_check_one VALUES('$tableNumber',$totalNum,$payMoney,$payMoney,'$applyMan','$currDept','$applyDate','$purchaser','$note','admin')";
+    $sqlMain1 = "INSERT INTO buylist_one VALUES('$tableNumber',$totalNum,$payMoney,$payMoney,'$applyMan','$currDept','$applyDate','$purchaser','$note','$operator')";
+    $sqlMain2 = "INSERT INTO waitfor_check_one VALUES('$tableNumber',$totalNum,$payMoney,$payMoney,'$applyMan','$currDept','$applyDate','$purchaser','$note','$operator')";
 
     $isOk = $isOk && $conn->query($sqlMain1);
     $isOk = $isOk && $conn->query($sqlMain2);
