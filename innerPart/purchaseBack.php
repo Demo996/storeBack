@@ -21,6 +21,10 @@ if(!$jwt) {
 }  else {
     substr($jwt,0,strlen($jwt)-5);
 }
+
+$conn = connectDB();
+mysqli_select_db($conn, MYSQL_DB1);
+
 // 数据库没有token则返回对应消息
 if($tmp = checkToken($jwt)) {
     $meta = $tmp;

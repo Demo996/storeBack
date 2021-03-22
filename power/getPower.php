@@ -15,7 +15,6 @@ if(!($data = file_get_contents("php://input"))) {
 }
 
 $jwt = isset($_SERVER['HTTP_TOKEN']) ? $_SERVER['HTTP_TOKEN'] : '';
-echo $jwt;
 if(!$jwt) {
     $meta["state"] = 201;
     $meta["msg"] = "Token有误，请重新登录验证";

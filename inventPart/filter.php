@@ -1,6 +1,5 @@
 <?php
-header('Access-Control-Allow-Origin:*');
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+header("Access-Control-Allow-Origin:*");
 require_once('../checkToken/checkToken.php');
 require_once('../comFunc.php');
 require_once('../header.php');
@@ -25,8 +24,7 @@ if(!$jwt) {
 
 $conn = connectDB();
 mysqli_select_db($conn, MYSQL_DB1);
-
-// 数据库没有token则返回对应消息
+// 数据库没有token
 if($tmp = checkToken($jwt)) {
     $meta = $tmp;
     $sendArr["meta"] = $meta;
@@ -35,41 +33,49 @@ if($tmp = checkToken($jwt)) {
     return;
 }
 
-parse_str($getData,$handleData);
+parse_str($getData, $handleData);
+
 $pageNum = intval($handleData["pagenum"]);
 $pageSize = intval($handleData["pagesize"]);
-$limitHead = ($pageNum - 1 ) * $pageSize; // 搜索行数范围之首行
+$code = $handleData["filterCode"];
+$name = $handleData["filterName"];
+$limitHead = ($pageNum - 1) * $pageSize; // 搜索行数范围之首行
 
-$sql = "SELECT waitfor_check_one.申请单编号, `产品/设备编码`, `产品/设备名称`, 类型, 型号, 规格, `颜色/形状`, 单位, waitfor_check_thr.*
-        FROM waitfor_check_one LEFT JOIN waitfor_check_two ON waitfor_check_one.申请单编号 = waitfor_check_two.申请单编号 LEFT JOIN waitfor_check_thr
-        ON waitfor_check_two.id = waitfor_check_thr.id LIMIT $limitHead,$pageSize";
+$addStr = "";
 
-$sqlNum = "SELECT COUNT(*) AS number FROM waitfor_check_one LEFT JOIN waitfor_check_two ON waitfor_check_one.申请单编号 = waitfor_check_two.申请单编号 LEFT JOIN waitfor_check_thr
-        ON waitfor_check_two.id = waitfor_check_thr.id";
+if($code) {
+    $addStr = " WHERE 编码 LIKE '$code%'";
+} else {
+    if($name) {
+        $addStr = " WHERE `名称` LIKE '$name%'";
+    }
+}
 
+$sql = "SELECT *FROM finaltable" . $addStr . " LIMIT $limitHead,$pageSize";
+$sqlNum = "SELECT COUNT(*) as number FROM finaltable" . $addStr;
 
 $getNum = $conn->query($sqlNum);
-if($getNum->num_rows > 0) {
+if ($getNum->num_rows > 0) {
     $row = $getNum->fetch_assoc();
     $pagetotal = $row['number'];
     $sendArr["pagetotal"] = $pagetotal;
-}else {
+} else {
     $meta["state"] = 202;
-    $meta["msg"] = "查询有误";
+    $meta["msg"] = "数据查询失败";
 }
 
 $result = $conn->query($sql);
-if($result->num_rows > 0) {
+if ($result->num_rows > 0) {
     $tmpArr = array();
-    while($row = $result->fetch_assoc()) {
+    while ($row = $result->fetch_assoc()) {
         array_push($tmpArr, $row);
     }
     $sendArr["data"] = $tmpArr;
-}else {
+} else {
     $meta["state"] = 202;
-    $meta["msg"] = "查询有误";
+    $meta["msg"] = "数据查询失败";
 }
 $sendArr["meta"] = $meta;
-echo json_encode($sendArr,JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
 $conn->close();
 ?>

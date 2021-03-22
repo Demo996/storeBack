@@ -12,29 +12,13 @@ if(!($data = file_get_contents("php://input"))) {
     return;
 }
 
-$jwt = isset($_SERVER['HTTP_TOKEN']) ? $_SERVER['HTTP_TOKEN'] : '';
-if(!$jwt) {
-    $meta["state"] = 201;
-    $meta["msg"] = "Token有误，请重新登录验证";
-    $sendArr["meta"] = $meta;
-    echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
-    return;
-}  else {
-    substr($jwt,0,strlen($jwt)-5);
-}
-// 数据库没有token则返回对应消息
-if($tmp = checkToken($jwt)) {
-    $meta = $tmp;
-    $sendArr["meta"] = $meta;
-    echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
-    $conn->close();
-    return;
-}
-
 parse_str($data, $getData);
 $userName = $getData["username"];
 $passWord = $getData["password"];
 $getDate = date("Y-m-d H:i:s");
+
+$conn = connectDB();
+mysqli_select_db($conn, MYSQL_DB1);
 
 $sql = "SELECT password,token,`role_name` FROM `user_test`,`roles_test` WHERE `user_name`='$userName' AND `role_pid`=`role_id`";
 $result = $conn->query($sql);

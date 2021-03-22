@@ -32,7 +32,6 @@ if($tmp = checkToken($jwt)) {
     $meta = $tmp;
     $sendArr["meta"] = $meta;
     echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
-    $conn->close();
     return;
 }
 
