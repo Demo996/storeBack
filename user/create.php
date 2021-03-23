@@ -37,6 +37,7 @@ if($tmp = checkToken($jwt)) {
 }
 
 parse_str($getData, $handleData);
+// $getObj = $handleData["ruleForm"];
 $name = $handleData["username"];
 $password = $handleData["password"];
 

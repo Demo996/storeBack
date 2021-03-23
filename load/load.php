@@ -36,7 +36,7 @@ if($result->num_rows) {
             if(!$getToken) {
                 $str = md5(uniqid(md5(microtime(true)),true));
                 $token = sha1($str);
-                $conn->query("UPDATE user_test SET token='$token' WHERE `user_name`='$username'");
+                $conn->query("UPDATE user_test SET token='$token' WHERE `user_name`='$userName'");
                 $sendArr["token"] = $token;
             } else {
                 $sendArr["token"] = $getToken;

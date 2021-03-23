@@ -6,6 +6,8 @@ require_once('../header.php');
 $meta = array("state"=>200,"msg"=>'操作成功');
 $sendArr = array();
 $getData = null;
+$sql = "";
+$sqlNum = "";
 
 if(!($getData = file_get_contents("php://input"))) {
     return;
@@ -38,14 +40,29 @@ parse_str($getData, $handleData);
 $store = $handleData["store"];
 $pageNum = intval($handleData["pagenum"]);
 $pageSize = intval($handleData["pagesize"]);
+$searchCode = $handleData["searchCode"];
+$searchDevName = $handleData["searchDevName"];
 $limitHead = ($pageNum - 1 ) * $pageSize; // 搜索行数范围之首行
 
+$addStr = "";
+
+if($searchCode || $searchDevName) {
+    $addStr = " WHERE 库存量<6 AND ";
+    if($searchCode) {
+        $addStr .= "`产品/设备编码` LIKE '$searchCode%' AND ";
+    }
+    if($searchDevName) {
+        $addStr .= "`产品/设备名称` LIKE '$searchDevName%' AND ";
+    }
+    $addStr = substr($addStr,0,strlen($addStr)-4);
+}
+
 if($store) {
-    $sql = "SELECT *FROM $store.finaltable WHERE 库存量<6 LIMIT $limitHead,$pageSize";
-    $sqlNum = "SELECT COUNT(*) as number FROM $store.finaltable";
+    $sql = "SELECT *FROM $store.finaltable" . $addStr . " LIMIT $limitHead,$pageSize";
+    $sqlNum = "SELECT COUNT(*) as number FROM $store.finaltable" . $addStr;
 } else {
-    $sql = "SELECT *FROM finaltable WHERE 库存量<6 LIMIT $limitHead,$pageSize";
-    $sqlNum = "SELECT COUNT(*) as number FROM finaltable";
+    $sql = "SELECT *FROM finaltable" . $addStr . " LIMIT $limitHead,$pageSize";
+    $sqlNum = "SELECT COUNT(*) as number FROM finaltable" . $addStr;
 }
 
 $getNum = $conn->query($sqlNum);

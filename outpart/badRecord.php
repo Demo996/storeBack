@@ -1,6 +1,4 @@
 <?php
-// 领用退还之正常退还
-// 本界面执行了正常退还操作数据更新 及 正常退还记录
 header("Access-Control-Allow-Origin:*");
 require_once('../checkToken/checkToken.php');
 require_once('../comFunc.php');
@@ -39,11 +37,34 @@ if($tmp = checkToken($jwt)) {
 parse_str($getData, $handleData);
 $pageNum = intval($handleData["pagenum"]);
 $pageSize = intval($handleData["pagesize"]);
+$searchMan = $handleData["searchMan"];
+$searchDate = $handleData["searchDate"];
+$searchCode = $handleData["searchCode"];
+$searchDevName = $handleData["searchDevName"];
 $limitHead = ($pageNum - 1 ) * $pageSize; // 搜索行数范围之首行
 
 
-$sql = "SELECT *FROM badpro_return LIMIT $limitHead,$pageSize";
-$sqlNum = "SELECT COUNT(*) as number FROM badpro_return";
+$addStr = "";
+
+if($searchMan || $searchDate || $searchCode || $searchDevName) {
+    $addStr = " WHERE ";
+    if($searchMan) {
+        $addStr .= "退还人 LIKE '$searchMan%' AND ";
+    }
+    if($searchDate) {
+        $addStr .= "退还日期 LIKE '$searchDate%' AND ";
+    }
+    if($searchCode) {
+        $addStr .= "`产品/设备编码` LIKE '$searchCode%' AND ";
+    }
+    if($searchDevName) {
+        $addStr .= "`产品/设备名称` LIKE '$searchDevName%' AND ";
+    }
+    $addStr = substr($addStr,0,strlen($addStr)-4);
+}
+
+$sql = "SELECT *FROM badpro_return" . $addStr . " LIMIT $limitHead,$pageSize";
+$sqlNum = "SELECT COUNT(*) as number FROM badpro_return" . $addStr;
 
 
 $getNum = $conn->query($sqlNum);

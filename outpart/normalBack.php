@@ -1,6 +1,4 @@
 <?php
-// 领用退还之正常退还
-// 本界面执行了正常退还操作数据更新 及 正常退还记录
 header("Access-Control-Allow-Origin:*");
 require_once('../checkToken/checkToken.php');
 require_once('../comFunc.php');

@@ -66,8 +66,11 @@ try {
     $isOk = $isOk && $conn->query($sqlMain1);
     $isOk = $isOk && $conn->query($sqlMain2);
 
-    foreach ($detail as  $value) {
-        $val = $value["arr"];
+    foreach ($detail as  $key => $value) {
+        $val = array();
+        foreach ($value as $key2 => $value2) {
+            array_push($val, $value2);
+        }
         $sqlDetail1 = "INSERT INTO buylist_two VALUES('$tableNumber','$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]',Null)";
         $sqlDetail2 = "INSERT INTO buylist_thr VALUES(Null,'$val[7]','$val[8]','$val[9]','$val[10]','$val[11]', '否','$val[12]' ,'$val[13]', '$val[14]')";
         $sqlDetail21 = "INSERT INTO waitfor_check_two VALUES('$tableNumber','$val[0]','$val[1]','$val[2]','$val[3]','$val[4]','$val[5]','$val[6]',Null)";

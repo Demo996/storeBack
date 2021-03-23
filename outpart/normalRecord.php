@@ -1,6 +1,4 @@
 <?php
-// 领用退还之正常退还
-// 本界面执行了正常退还操作数据更新 及 正常退还记录
 header("Access-Control-Allow-Origin:*");
 require_once('../checkToken/checkToken.php');
 require_once('../comFunc.php');
@@ -39,14 +37,34 @@ parse_str($getData, $handleData);
 $store = $handleData["store"];
 $pageNum = intval($handleData["pagenum"]);
 $pageSize = intval($handleData["pagesize"]);
+$searchDate = $handleData["searchDate"];
+$searchCode = $handleData["searchCode"];
+$searchDevName = $handleData["searchDevName"];
 $limitHead = ($pageNum - 1 ) * $pageSize; // 搜索行数范围之首行
 
+$addStr = "";
+
+if($searchDate || $searchCode || $searchDevName) {
+    $addStr = " WHERE ";
+    if($searchDate) {
+        $addStr .= "退还日期='$searchDate' AND ";
+    }
+    if($searchCode) {
+        $addStr .= "`产品/设备编码`='$searchCode' AND ";
+    }
+    if($searchDevName) {
+        $addStr .= "`产品/设备名称`='$searchDevName' AND ";
+    }
+    $addStr = substr($addStr,0,strlen($addStr)-4);
+}
+
+
 if($store) {
-    $sql = "SELECT *FROM $store.depart_return LIMIT $limitHead,$pageSize";
-    $sqlNum = "SELECT COUNT(*) as number FROM $store.depart_return";
+    $sql = "SELECT *FROM $store.depart_return" . $addStr . " LIMIT $limitHead,$pageSize";
+    $sqlNum = "SELECT COUNT(*) as number FROM $store.depart_return" . $addStr;
 } else {
-    $sql = "SELECT *FROM depart_return LIMIT $limitHead,$pageSize";
-    $sqlNum = "SELECT COUNT(*) as number FROM depart_return";
+    $sql = "SELECT *FROM depart_return" . $addStr . " LIMIT $limitHead,$pageSize";
+    $sqlNum = "SELECT COUNT(*) as number FROM depart_return" . $addStr;
 }
 
 $getNum = $conn->query($sqlNum);

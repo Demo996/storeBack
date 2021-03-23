@@ -44,10 +44,10 @@ $limitHead = ($pageNum - 1) * $pageSize; // 搜索行数范围之首行
 $addStr = "";
 
 if($code) {
-    $addStr = " WHERE 编码 LIKE '$code%'";
+    $addStr = " WHERE `产品/设备编码` LIKE '$code%'";
 } else {
     if($name) {
-        $addStr = " WHERE `名称` LIKE '$name%'";
+        $addStr = " WHERE `产品/设备名称` LIKE '$name%'";
     }
 }
 
