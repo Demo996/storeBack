@@ -77,7 +77,7 @@ $checkInMoney = intval($getPrice) * intval($getCheckNum);
 
 if($getTitle) {
     // 更新待入库产品的数据
-    $sql_wait_upd1 = "UPDATE waitfor_check_thr SET 数量=$getNumb, 合计金额=数量*单价, 票据签收='$getFee' WHERE id=$getId";
+    $sql_wait_upd1 = "UPDATE waitfor_check_thr SET 数量=$getNumb, 合计金额=数量*单价, 票据签收='$getFeeState' WHERE id=$getId";
     $sql_wait_upd2 = "UPDATE waitfor_check_one SET 待审核总数 = 待审核总数 - $getCheckNum WHERE 申请单编号 = '$applyNum'";
 
     // 删除全部审核通过且发票全部收到的数据信息
@@ -125,26 +125,19 @@ if($getTitle) {
         $isOk = $isOk && $conn->query($sql_main_ins3);
         $isOk = $isOk && $conn->query($sql_main_ins4);
 
-        echo $conn->error;
         if($isOk) {
             $conn->commit();
             $meta["state"] = 200;
             $meta["msg"] = "提交成功";
-            $sendArr["meta"] = $meta;
-            echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
         } else {
             $conn->rollback();
             $meta["state"] = 202;
             $meta["msg"] = "数据提交失败";
-            $sendArr["meta"] = $meta;
-            echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
         }
     } catch (Exception $ex) {
         $conn->rollback();
         $meta["state"] = 202;
         $meta["msg"] = "数据提交失败";
-        $sendArr["meta"] = $meta;
-        echo json_encode($sendArr, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_NUMERIC_CHECK);
     }
 }else{
     $isOk = true;
